@@ -1,6 +1,6 @@
-python3.10 -m venv afs-api
-virtualenv afs-api
+python3.10 -m venv venv
+virtualenv venv
 
-source afs-api/bin/activate
+source venv/bin/activate
 
 pip install -r requirements.txt
