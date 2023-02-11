@@ -6,3 +6,4 @@
 venv*
 .vscode/
 deploy_aws.sh
+.env
