@@ -1,10 +1,8 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from pytest import raises
 import shortuuid
-# from functions import is_even
-
 
 app = Flask(__name__)
 CORS(app)
@@ -14,17 +12,7 @@ submissions = {}
 # NOTE: This route is needed for the default EB health check route
 @app.route('/')  
 def home():
-    return "ok"
-
-@app.route('/api/get_topics')
-def get_topics():
-    return {"topics": ["topic1", "other stuff", "next topic"]}
-
-
-@app.route('/api/submit_question', methods=["POST"])
-def submit_question():
-    question = json.loads(request.data)["question"]
-    return {"answer": f"Your question was {len(question)} chars long"}
+    return render_template("marquee/index.html")
 
 @app.route('/assignment', methods=["POST"])
 def post_assignment():
