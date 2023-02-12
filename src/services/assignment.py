@@ -1,10 +1,10 @@
 from flask import Blueprint, request
+import repositories.dynamodb as db
 import shortuuid
 import json
 
 submissions = {}
 bp = Blueprint('assignment', __name__, template_folder='/src/templates')
-
 
 @bp.route('/assignment', methods=["POST"])
 def post_assignment():
@@ -16,3 +16,7 @@ def post_assignment():
 @bp.route('/assignment/<id>', methods=["GET"])
 def get_assignment(id):
     return submissions[id]
+
+@bp.route('/assignment/env', methods=["GET"])
+def get_env():
+    return f"{db.access_key}  --  {db.secret_key}"
