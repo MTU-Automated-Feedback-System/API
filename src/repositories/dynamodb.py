@@ -10,4 +10,5 @@ dynamo_client = boto3.resource(
     aws_access_key_id = access_key,
     aws_secret_access_key = secret_key)
 
-
+# assignment_table = dynamo_client.Table('Assignments')
+# submission_table = dynamo_client.Table('Submissions')

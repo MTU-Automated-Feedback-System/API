@@ -18,5 +18,5 @@ def get_assignment(id):
     return submissions[id]
 
 @bp.route('/assignment/env', methods=["GET"])
-def get_env():
-    return f"{db.access_key}  --  {db.secret_key}"
+def get_table():
+    return f"{db.access_key[:5]}"
