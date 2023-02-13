@@ -3,7 +3,6 @@ import repositories.dynamodb as db
 import shortuuid
 import json
 
-submissions = {}
 bp = Blueprint('submission', __name__, template_folder='/src/templates')
 
 @bp.route('/submission', methods=["POST"])
