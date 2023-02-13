@@ -4,6 +4,8 @@ import os
 access_key = os.environ.get('ACCESS_KEY_TEST')
 secret_key = os.environ.get('SECRET_KEY_TEST')
 
+env = os.environ.items()
+
 dynamo_client = boto3.resource(
     service_name = 'dynamodb',
     region_name = 'eu-west-1',
