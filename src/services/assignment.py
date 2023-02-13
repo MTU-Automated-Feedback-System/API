@@ -17,10 +17,6 @@ def post_assignment():
 def get_assignment(id):
     return submissions[id]
 
-@bp.route('/assignment/env', methods=["GET"])
-def get_table():
-    return f"{db.access_key[:5]}"
-
-@bp.route('/test', methods=["GET"])
-def get_test():
-    return "test1"
+@bp.route('/assignment/all', methods=["GET"])
+def get_all_assignments():
+    return f"{db.assignment_table.scan()['Items']}"
