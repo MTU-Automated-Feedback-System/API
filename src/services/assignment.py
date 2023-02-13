@@ -19,7 +19,7 @@ def get_assignment(id):
 
 @bp.route('/assignment/env', methods=["GET"])
 def get_table():
-    return f"{db.env}"
+    return f"{db.access_key[:5]}"
 
 @bp.route('/test', methods=["GET"])
 def get_test():
