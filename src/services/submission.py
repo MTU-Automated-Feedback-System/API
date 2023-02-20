@@ -11,12 +11,12 @@ bp = Blueprint('submission', __name__, template_folder='/src/templates')
 def post_submission():
     payload = json.loads(request.data)
     print(payload)
-    SubmissionId = shortuuid.uuid()
-    payload["SubmissionId"] = SubmissionId
+    submission_id = shortuuid.uuid()
+    payload["SubmissionId"] = submission_id
     payload["status"] = "processing"
     print(payload)
     db.submission_table.put_item(Item=payload)
-    return {"id": SubmissionId}
+    return {"id": submission_id}
 
 
 """
@@ -25,15 +25,14 @@ def post_submission():
 """
 @bp.route('/submission/i/', methods=["GET"])
 def get_submission():
-    SubmissionId = request.args.get('SubmissionId')
-    AssignmentId = request.args.get('AssignmentId')
-    print(SubmissionId, AssignmentId)
-    return {SubmissionId:
-        db.submission_table.get_item(Key={
-            "SubmissionId":  SubmissionId,
-            "AssignmentId":  AssignmentId
+    submission_id = request.args.get('SubmissionId')
+    assignment_id = request.args.get('AssignmentId')
+    submission = db.submission_table.get_item(Key={
+            "SubmissionId":  submission_id,
+            "AssignmentId":  assignment_id
         }
-    )}
+    )
+    return {"submission": submission}
 
 
 """

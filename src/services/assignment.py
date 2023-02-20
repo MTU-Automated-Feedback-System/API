@@ -19,7 +19,8 @@ def post_assignment():
 
 @bp.route('/assignment/<id>', methods=["GET"])
 def get_assignment(id):
-    return {db.assignment_table.get_item(Key={'AssignmentId': id})}
+    assignment = db.assignment_table.get_item(Key={'AssignmentId': id})
+    return {"data": assignment}
 
 
 @bp.route('/assignment/all', methods=["GET"])
