@@ -1,8 +1,8 @@
 import boto3
 import os
 
-access_key = os.environ.get('ACCESS_KEY_TEST')
-secret_key = os.environ.get('SECRET_KEY_TEST')
+access_key = os.environ.get('ACCESS_KEY')
+secret_key = os.environ.get('SECRET_KEY')
 
 dynamo_client = boto3.resource(
     service_name = 'dynamodb',
