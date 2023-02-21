@@ -1,8 +1,6 @@
 from flask import Blueprint, request
 import repositories.dynamodb as db
-import shortuuid
-import json
-import requests
+import shortuuid, json, requests, os
 from boto3.dynamodb.conditions import Key
 
 bp = Blueprint('submission', __name__, template_folder='/src/templates')
@@ -13,14 +11,11 @@ bp = Blueprint('submission', __name__, template_folder='/src/templates')
 @bp.route('/submission', methods=["POST"])
 def post_submission():
     payload = json.loads(request.data)
-    print(payload)
     submission_id = shortuuid.uuid()
     payload["SubmissionId"] = submission_id
     payload["compiled_status"] = "processing"
-    print(payload)
     db.submission_table.put_item(Item=payload)
-    requests.post("http://127.0.0.1:8081/submission", json=payload)
-    
+    requests.post(os.environ.get("CODE_ANALYZER_URL")+"/submission", json=payload)
     return {"id": submission_id}
 
 
