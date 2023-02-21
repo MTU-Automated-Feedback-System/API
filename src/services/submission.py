@@ -16,7 +16,7 @@ def post_submission():
     print(payload)
     submission_id = shortuuid.uuid()
     payload["SubmissionId"] = submission_id
-    payload["status"] = "processing"
+    payload["compiled_status"] = "processing"
     print(payload)
     db.submission_table.put_item(Item=payload)
     requests.post("http://127.0.0.1:8081/submission", json=payload)
@@ -29,13 +29,13 @@ def update_submission():
     payload = json.loads(request.data)
     submission_id = payload['SubmissionId']
     assignment_id = payload['AssignmentId']
-    output = payload['output']
-    status = payload['status']
+    compiled_output = payload['compiled_output']
+    compiled_status = payload['compiled_status']
     response = db.submission_table.update_item(
                 Key={'SubmissionId': submission_id, 'AssignmentId': assignment_id},
-                UpdateExpression="set output=:o, status=:s",
+                UpdateExpression="set compiled_output=:o, compiled_status=:s",
                 ExpressionAttributeValues={
-                    ':o': output, ':s': status},
+                    ':o': compiled_output, ':s': compiled_status},
                 ReturnValues="UPDATED_NEW")
 
     return response['Attributes']
