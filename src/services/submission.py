@@ -2,11 +2,14 @@ from flask import Blueprint, request
 import repositories.dynamodb as db
 import shortuuid
 import json
+import requests
 from boto3.dynamodb.conditions import Key
 
 bp = Blueprint('submission', __name__, template_folder='/src/templates')
 
-
+"""
+    Receive a submission
+"""
 @bp.route('/submission', methods=["POST"])
 def post_submission():
     payload = json.loads(request.data)
@@ -16,8 +19,26 @@ def post_submission():
     payload["status"] = "processing"
     print(payload)
     db.submission_table.put_item(Item=payload)
+    requests.post("http://127.0.0.1:8081/submission", json=payload)
+    
     return {"id": submission_id}
 
+
+@bp.route('/submission', methods=["PATCH"])
+def update_submission():
+    payload = json.loads(request.data)
+    submission_id = payload['SubmissionId']
+    assignment_id = payload['AssignmentId']
+    output = payload['output']
+    status = payload['status']
+    response = db.submission_table.update_item(
+                Key={'SubmissionId': submission_id, 'AssignmentId': assignment_id},
+                UpdateExpression="set output=:o, status=:s",
+                ExpressionAttributeValues={
+                    ':o': output, ':s': status},
+                ReturnValues="UPDATED_NEW")
+
+    return response['Attributes']
 
 """
     Use get_item to retrieve a submission using the composite key
