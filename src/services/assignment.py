@@ -9,10 +9,8 @@ bp = Blueprint('assignment', __name__, template_folder='/src/templates')
 @bp.route('/assignment', methods=["POST"])
 def post_assignment():
     payload = json.loads(request.data)
-    print(payload)
     AssignmentId = shortuuid.uuid()
     payload["AssignmentId"] = AssignmentId
-    print(payload)
     db.assignment_table.put_item(Item=payload)
     return {"id": AssignmentId}
 

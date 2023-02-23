@@ -19,6 +19,9 @@ def post_submission():
     return {"id": submission_id}
 
 
+"""
+    Update a submission
+"""
 @bp.route('/submission', methods=["PATCH"])
 def update_submission():
     payload = json.loads(request.data)
