@@ -12,7 +12,7 @@ bp = Blueprint('submission', __name__, template_folder='/src/templates')
 def post_submission():
     payload = json.loads(request.data)
     submission_id = shortuuid.uuid()
-    payload["SubmissionId"] = submission_id
+    payload["submission_id"] = submission_id
     payload["compiled_status"] = "processing"
     db.submission_table.put_item(Item=payload)
     requests.post(os.environ.get("CODE_ANALYZER_URL")+"/submission", json=payload)
@@ -25,12 +25,12 @@ def post_submission():
 @bp.route('/submission', methods=["PATCH"])
 def update_submission():
     payload = json.loads(request.data)
-    submission_id = payload['SubmissionId']
-    assignment_id = payload['AssignmentId']
+    submission_id = payload['submission_id']
+    assignment_id = payload['assignment_id']
     compiled_output = payload['compiled_output']
     compiled_status = payload['compiled_status']
     response = db.submission_table.update_item(
-                Key={'SubmissionId': submission_id, 'AssignmentId': assignment_id},
+                Key={'submission_id': submission_id, 'assignment_id': assignment_id},
                 UpdateExpression="set compiled_output=:o, compiled_status=:s",
                 ExpressionAttributeValues={
                     ':o': compiled_output, ':s': compiled_status},
@@ -44,23 +44,23 @@ def update_submission():
 """
 @bp.route('/submission/i/', methods=["GET"])
 def get_submission():
-    submission_id = request.args.get('SubmissionId')
-    assignment_id = request.args.get('AssignmentId')
+    submission_id = request.args.get('submission_id')
+    assignment_id = request.args.get('assignment_id')
     submission = db.submission_table.get_item(Key={
-            "SubmissionId":  submission_id,
-            "AssignmentId":  assignment_id
+            "submission_id":  submission_id,
+            "assignment_id":  assignment_id
         }
     )
     return {"submission": submission}
 
 
 """
-    Get an item in the table only using the Partition key "SubmissionId"
-    Will still be fast as the key is unique but less efficient
+    Get an item in the table only using the Partition key "submission_id"
+    Will still be fast since the key is unique but less efficient
 """
 @bp.route('/submission/<id>', methods=["GET"])
 def get_submission_query(id):
-    return {id: db.submission_table.query(KeyConditionExpression=Key('SubmissionId').eq(id))}
+    return {id: db.submission_table.query(KeyConditionExpression=Key('submission_id').eq(id))}
 
 
 @bp.route('/submission/all', methods=["GET"])

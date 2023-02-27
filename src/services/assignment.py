@@ -9,15 +9,15 @@ bp = Blueprint('assignment', __name__, template_folder='/src/templates')
 @bp.route('/assignment', methods=["POST"])
 def post_assignment():
     payload = json.loads(request.data)
-    AssignmentId = shortuuid.uuid()
-    payload["AssignmentId"] = AssignmentId
+    assignment_id = shortuuid.uuid()
+    payload["assignment_id"] = assignment_id
     db.assignment_table.put_item(Item=payload)
-    return {"id": AssignmentId}
+    return {"id": assignment_id}
 
 
 @bp.route('/assignment/<id>', methods=["GET"])
 def get_assignment(id):
-    assignment = db.assignment_table.get_item(Key={'AssignmentId': id})
+    assignment = db.assignment_table.get_item(Key={'assignment_id': id})
     return {"data": assignment}
 
 
