@@ -2,6 +2,7 @@ from flask import Blueprint, request
 import repositories.dynamodb as db
 import shortuuid, json, requests, os
 from boto3.dynamodb.conditions import Key
+from queues.sqs import send_to_queue
 
 bp = Blueprint('submission', __name__, template_folder='/src/templates')
 
@@ -15,8 +16,10 @@ def post_submission():
     payload["submission_id"] = submission_id
     payload["compiled_status"] = "processing"
     db.submission_table.put_item(Item=payload)
-    requests.post(os.environ.get("CODE_ANALYZER_URL")+"/submission", json=payload)
-    return {"id": submission_id}
+    response = send_to_queue(payload)
+    # Sending payload to queue instad of analyzer
+    # requests.post(os.environ.get("CODE_ANALYZER_URL")+"/submission", json=payload)
+    return {"id": submission_id, "response": response}
 
 
 """
