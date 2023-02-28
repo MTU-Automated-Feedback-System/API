@@ -1,4 +1,4 @@
-import boto3, os
+import boto3, os, json
 
 queue_url = os.environ.get('SQS_SUBMISSION')
 access_key = os.environ.get('ACCESS_KEY')
@@ -11,12 +11,12 @@ sqs_client = boto3.client('sqs',
 
 def send_to_queue(payload):
     try:
+        message = json.dumps(payload)
         response = sqs_client.send_message(
             QueueUrl=queue_url,
-            MessageBody=payload
+            MessageBody=message
         )
         return response
     
     except Exception as e:
-        print("Error in sending message \n{}".format(e))
-        return "Error sending SQS"
+        return f"Error sending SQS\n{e}"
