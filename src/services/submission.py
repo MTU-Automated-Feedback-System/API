@@ -3,6 +3,7 @@ import repositories.dynamodb as db
 import shortuuid, json
 from boto3.dynamodb.conditions import Key
 from queues.sqs import send_to_queue
+from datetime import datetime
 
 bp = Blueprint('submission', __name__, template_folder='/src/templates')
 
@@ -16,6 +17,7 @@ def post_submission():
         submission_id = shortuuid.uuid()
         payload["submission_id"] = submission_id
         payload["compiled_status"] = "processing"
+        payload["date_time"] = datetime.now().isoformat()
         db.submission_table.put_item(Item=payload)
         response = send_to_queue(payload)
         return {"id": submission_id, "response": response}
