@@ -32,11 +32,11 @@ def post_submission():
 def update_submission():
     payload = json.loads(request.data)
     submission_id = payload['submission_id']
-    assignment_id = payload['assignment_id']
+    exercise_id = payload['exercise_id']
     compiled_output = payload['compiled_output']
     compiled_status = payload['compiled_status']
     response = db.submission_table.update_item(
-                Key={'submission_id': submission_id, 'assignment_id': assignment_id},
+                Key={'submission_id': submission_id, 'exercise_id': exercise_id},
                 UpdateExpression="set compiled_output=:o, compiled_status=:s",
                 ExpressionAttributeValues={
                     ':o': compiled_output, ':s': compiled_status},
@@ -51,10 +51,10 @@ def update_submission():
 @bp.route('/submission/i/', methods=["GET"])
 def get_submission():
     submission_id = request.args.get('submission_id')
-    assignment_id = request.args.get('assignment_id')
+    exercise_id = request.args.get('exercise_id')
     submission = db.submission_table.get_item(Key={
             "submission_id":  submission_id,
-            "assignment_id":  assignment_id
+            "exercise_id":  exercise_id
         }
     )
     return {"submission": submission}
