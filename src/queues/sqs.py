@@ -19,4 +19,4 @@ def send_to_queue(payload):
         return response
     
     except Exception as e:
-        return f"Error sending SQS\n{e}"
+        return f"Error sending SQS  \n{e}"
