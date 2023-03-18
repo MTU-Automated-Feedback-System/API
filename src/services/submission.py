@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response
-import repositories.dynamodb as db
+import repositories.submission_repo as db_submission
+import repositories.exercise_repo as db_exercise
 import shortuuid, json
-from boto3.dynamodb.conditions import Key
 from queues.sqs import send_to_queue
 from datetime import datetime
 
@@ -18,8 +18,13 @@ def post_submission():
         payload["submission_id"] = submission_id
         payload["compiled_status"] = "processing"
         payload["date_time"] = datetime.now().isoformat()
-        db.submission_table.put_item(Item=payload)
+        
+        db_submission.add(payload)
+
+        payload["exercise"] = db_exercise.get_query(payload["exercise_id"])
+
         response = send_to_queue(payload)
+        
         return {"id": submission_id, "response": response}
     except Exception as e:
         return Response(f"{{'error':{e}}}", status=500, mimetype='application/json')
@@ -35,14 +40,8 @@ def update_submission():
     exercise_id = payload['exercise_id']
     compiled_output = payload['compiled_output']
     compiled_status = payload['compiled_status']
-    response = db.submission_table.update_item(
-                Key={'submission_id': submission_id, 'exercise_id': exercise_id},
-                UpdateExpression="set compiled_output=:o, compiled_status=:s",
-                ExpressionAttributeValues={
-                    ':o': compiled_output, ':s': compiled_status},
-                ReturnValues="UPDATED_NEW")
-
-    return response['Attributes']
+    response = db_submission.update(submission_id, exercise_id, compiled_output, compiled_status)
+    return response
 
 """
     Use get_item to retrieve a submission using the composite key
@@ -52,11 +51,7 @@ def update_submission():
 def get_submission():
     submission_id = request.args.get('submission_id')
     exercise_id = request.args.get('exercise_id')
-    submission = db.submission_table.get_item(Key={
-            "submission_id":  submission_id,
-            "exercise_id":  exercise_id
-        }
-    )
+    submission = db_submission.get_item(submission_id, exercise_id)
     return {"submission": submission}
 
 
@@ -66,10 +61,9 @@ def get_submission():
 """
 @bp.route('/submission/<id>', methods=["GET"])
 def get_submission_query(id):
-    return {id: db.submission_table.query(KeyConditionExpression=Key('submission_id').eq(id))}
+    return {id: db_submission.get_query(id)}
 
 
 @bp.route('/submission/all', methods=["GET"])
 def get_all_submissions():
-    print(db.submission_table.scan()['Items'])
-    return {"submissions": db.submission_table.scan()['Items']}
+    return {"submissions": db_submission.get_all()}

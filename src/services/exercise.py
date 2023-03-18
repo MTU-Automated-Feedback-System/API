@@ -1,7 +1,7 @@
 from flask import Blueprint, request
-from boto3.dynamodb.conditions import Key
-import repositories.dynamodb as db
-import shortuuid, json, datetime
+import repositories.exercise_repo as db_exercise
+import shortuuid, json
+from datetime import datetime
 
 bp = Blueprint('exercise', __name__, template_folder='/src/templates')
 
@@ -12,29 +12,22 @@ def post_exercise():
     exercise_id = shortuuid.uuid()
     payload["exercise_id"] = exercise_id
     payload["date_time"] = datetime.now().isoformat()
-    db.exercise_table.put_item(Item=payload)
+    db_exercise.add(payload)
     return {"id": exercise_id}
 
 
 @bp.route('/exercise/i/', methods=["GET"])
-def get_exercise(id):
+def get_exercise():
     exercise_id = request.args.get('exercise_id')
     date_time = request.args.get('date_time')
-    exercise = db.exercise_table.get_item(Key={
-            "exercise_id":  exercise_id,
-            "date_time": date_time
-        }
-    )
-    return {"exercise": exercise} 
+    return {"exercise": db_exercise.get_item(exercise_id, date_time)} 
 
 
 @bp.route('/exercise/<id>', methods=["GET"])
 def get_exercise_query(id):
-    return {id: db.exercise_table.query(KeyConditionExpression=Key('exercise_id').eq(id))}
-
+    return {id: db_exercise.get_query(id)}
 
 
 @bp.route('/exercise/all', methods=["GET"])
 def get_all_exercises():
-    print(db.exercise_table.scan()['Items'])
-    return {"exercises": db.exercise_table.scan()['Items']}
+    return {"exercises": db_exercise.get_all()}
