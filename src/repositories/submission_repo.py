@@ -1,4 +1,4 @@
-import dynamodb as db
+import repositories.boto3_client as db
 from boto3.dynamodb.conditions import Key
 
 
