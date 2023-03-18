@@ -40,7 +40,8 @@ def update_submission():
     exercise_id = payload['exercise_id']
     compiled_output = payload['compiled_output']
     compiled_status = payload['compiled_status']
-    response = db_submission.update(submission_id, exercise_id, compiled_output, compiled_status)
+    test_result = payload['test_result']
+    response = db_submission.update(submission_id, exercise_id, compiled_output, compiled_status, test_result)
     return response
 
 """
