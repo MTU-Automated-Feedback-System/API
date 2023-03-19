@@ -31,3 +31,4 @@ def get_exercise_query(id):
 @bp.route('/exercise/all', methods=["GET"])
 def get_all_exercises():
     return {"exercises": db_exercise.get_all()}
+    

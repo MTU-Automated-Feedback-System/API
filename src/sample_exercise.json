@@ -1,0 +1,23 @@
+{
+  "exercise_id": "1",
+  "date_time": "2023-03-19T12:30:45.000Z",
+  "description": {
+      "title": "Starting Functions > Draw a Box",
+      "description": "This is the descritption of the exercise.",
+      "examples": [
+          "example1"
+      ]
+  },
+  "test_cases": [
+      {
+          "type": "stdoutput",
+          "expected_result": "Ky0tLS0tLSsKLSAgICAgIC0KLSAgICAgIC0KLSAgICAgIC0KKy0tLS0tLSs="
+      }
+  ],
+  "main_name": "draw_box",
+  "allowed_functions": [
+      "List of functions"
+  ],
+  "hints": "",
+  "default_code": "ZGVmIGRyYXdfYm94KHRleHQpOgogICAgIyBXcml0ZSB5b3VyIGNvZGUgaGVyZQogICAgIyBBZGQgYSBmb3IgbG9vcCB0byBkcm9wIHRoZSBib3gKCmRyYXdfYm94KCk="
+}
