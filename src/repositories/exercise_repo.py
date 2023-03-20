@@ -18,7 +18,7 @@ def get_item(exercise_id, date_time):
 def get_query(exercise_id):
     exercise = db.exercise_table.query(KeyConditionExpression=Key('exercise_id').eq(exercise_id))
     # Handle exception and/or more
-    return exercise
+    return exercise["Items"]
 
 def get_all():
     exercises = db.exercise_table.scan()['Items']

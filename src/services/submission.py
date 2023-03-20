@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response
 import repositories.submission_repo as db_submission
 import repositories.exercise_repo as db_exercise
-import shortuuid, json
+import shortuuid, json, requests
 from queues.sqs import send_to_queue
 from datetime import datetime
 
@@ -15,17 +15,18 @@ def post_submission():
     try:
         payload = json.loads(request.data)
         submission_id = shortuuid.uuid()
+
         payload["submission_id"] = submission_id
         payload["compiled_status"] = "processing"
         payload["date_time"] = datetime.now().isoformat()
         
         db_submission.add(payload)
-
-        payload["exercise"] = db_exercise.get_query(payload["exercise_id"])
-
-        response = send_to_queue(payload)
         
-        return {"id": submission_id, "response": response}
+        payload["exercise"] = db_exercise.get_query(payload["exercise_id"])[0]
+        # response = send_to_queue(payload)
+        response = requests.post("http://127.0.0.1:8081/submission", json=payload)
+        
+        return {"id": submission_id, "response": response.text}
     except Exception as e:
         return Response(f"{{'error':{e}}}", status=500, mimetype='application/json')
 
@@ -54,7 +55,6 @@ def get_submission():
     exercise_id = request.args.get('exercise_id')
     submission = db_submission.get_item(submission_id, exercise_id)
     return {"submission": submission}
-
 
 """
     Get an item in the table only using the Partition key "submission_id"

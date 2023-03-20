@@ -25,7 +25,7 @@ def get_exercise():
 
 @bp.route('/exercise/<id>', methods=["GET"])
 def get_exercise_query(id):
-    return {id: db_exercise.get_query(id)}
+    return db_exercise.get_query(id)
 
 
 @bp.route('/exercise/all', methods=["GET"])
