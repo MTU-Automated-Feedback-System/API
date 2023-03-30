@@ -13,7 +13,8 @@ bp = Blueprint('submission', __name__, template_folder='/src/templates')
 @bp.route('/submission', methods=["POST"])
 def post_submission():
     try:
-        payload = json.loads(request.data)
+        # payload = json.loads(request.data)
+        payload = request.get_json()
         submission_id = shortuuid.uuid()
 
         payload["submission_id"] = submission_id
@@ -36,7 +37,8 @@ def post_submission():
 """
 @bp.route('/submission', methods=["PATCH"])
 def update_submission():
-    payload = json.loads(request.data)
+    # payload = json.loads(request.data)
+    payload = request.get_json()
     submission_id = payload['submission_id']
     exercise_id = payload['exercise_id']
     compiled_output = payload['compiled_output']

@@ -1,23 +1,30 @@
 {
   "exercise_id": "1",
   "date_time": "2023-03-19T12:30:45.000Z",
+  "allowed_functions": ["List of functions"],
+  "default_code": "ZGVmIGRyYXdfYm94KCk6CiAgICAjIFdyaXRlIHlvdXIgY29kZSBoZXJlCiAKCmRyYXdfYm94KCk=",
   "description": {
-      "title": "Starting Functions > Draw a Box",
-      "description": "This is the descritption of the exercise.",
-      "examples": [
-          "example1"
-      ]
-  },
-  "test_cases": [
+    "description": "<p>Write and test a <code>draw_box()</code> function to display the following.</p>\n<pre>\n+------+\n-      -\n-      -\n-      -\n+------+\n</pre>\n<p>Use a loop to create the repeating three lines i.e. use a loop to write <code>\"-       -\"</code>\nthree times.</p>\n",
+    "examples": [
       {
-          "type": "stdoutput",
-          "expected_result": "Ky0tLS0tLSsKLSAgICAgIC0KLSAgICAgIC0KLSAgICAgIC0KKy0tLS0tLSs="
+        "Sample code": "<pre>\ndef draw_box()\n    print(\"Add for loop here to draw the box\")\n\ndraw_box()\n</pre>"
+      },
+      {
+        "Output something on screen": "<pre>\nprint(\"something\")\n</pre>"
+      },
+      {
+        "For loop that print something 3 times": "<pre>\nfor i in range(3):\n    print(\"something\")\n</pre>"
       }
-  ],
+    ],
+    "title": "Starting Functions > Draw a Box"
+  },
+  "expected_element": ["for", "while"],
+  "hints": [""],
   "main_name": "draw_box",
-  "allowed_functions": [
-      "List of functions"
-  ],
-  "hints": "",
-  "default_code": "ZGVmIGRyYXdfYm94KHRleHQpOgogICAgIyBXcml0ZSB5b3VyIGNvZGUgaGVyZQogICAgIyBBZGQgYSBmb3IgbG9vcCB0byBkcm9wIHRoZSBib3gKCmRyYXdfYm94KCk="
+  "test_cases": [
+    {
+      "expected_result": "Ky0tLS0tLSsKLSAgICAgIC0KLSAgICAgIC0KLSAgICAgIC0KKy0tLS0tLSs=",
+      "type": "stdoutput"
+    }
+  ]
 }
