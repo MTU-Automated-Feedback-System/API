@@ -16,7 +16,6 @@ def post_submission():
         # payload = json.loads(request.data)
         payload = request.get_json()
         submission_id = shortuuid.uuid()
-
         payload["submission_id"] = submission_id
         payload["compiled_status"] = "processing"
         payload["date_time"] = datetime.now().isoformat()
@@ -24,14 +23,16 @@ def post_submission():
         db_submission.add(payload)
         
         payload["exercise"] = db_exercise.get_query(payload["exercise_id"])[0]
+        for test_case in payload["exercise"]["test_cases"]:
+            test_case["threshold"] = int(test_case["threshold"])
+
         # response = send_to_queue(payload)
         response = requests.post("http://127.0.0.1:8081/submission", json=payload)
         
         return {"id": submission_id, "response": response.text}
     except Exception as e:
         return Response(f"{{'error':{e}}}", status=500, mimetype='application/json')
-
-
+    
 """
     Update a submission
 """
@@ -43,8 +44,11 @@ def update_submission():
     exercise_id = payload['exercise_id']
     compiled_output = payload['compiled_output']
     compiled_status = payload['compiled_status']
-    test_result = payload['test_result']
-    response = db_submission.update(submission_id, exercise_id, compiled_output, compiled_status, test_result)
+    error_type = payload['error_type']
+    test_cases = payload['test_cases']
+    feedback = payload['feedback']
+    response = db_submission.update(submission_id, exercise_id, compiled_output,
+                compiled_status, error_type, test_cases, feedback)
     return response
 
 """

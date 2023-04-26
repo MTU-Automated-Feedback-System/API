@@ -6,12 +6,12 @@ def add(payload):
     db.submission_table.put_item(Item=payload)
     
 
-def update(submission_id, exercise_id, compiled_output, compiled_status, test_result):
+def update(submission_id, exercise_id, compiled_output, compiled_status, error_type, test_cases, feedback):
     response = db.submission_table.update_item(
                 Key={'submission_id': submission_id, 'exercise_id': exercise_id},
-                UpdateExpression="set compiled_output=:o, compiled_status=:s, test_result=:t",
+                UpdateExpression="set compiled_output=:o, compiled_status=:s, error_type=:er, test_cases=:tc, feedback=:f",
                 ExpressionAttributeValues={
-                    ':o': compiled_output, ':s': compiled_status, ':t':test_result},
+                    ':o': compiled_output, ':s': compiled_status, ':er':error_type, ':tc': test_cases, ":f": feedback},
                 ReturnValues="UPDATED_NEW")
     return response['Attributes']
 
