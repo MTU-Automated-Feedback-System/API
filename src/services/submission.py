@@ -47,8 +47,9 @@ def update_submission():
     error_type = payload['error_type']
     test_cases = payload['test_cases']
     feedback = payload['feedback']
+    cases = payload["cases"]
     response = db_submission.update(submission_id, exercise_id, compiled_output,
-                compiled_status, error_type, test_cases, feedback)
+                compiled_status, error_type, test_cases, feedback, cases)
     return response
 
 """
