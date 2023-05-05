@@ -25,10 +25,16 @@ def get_item(submission_id, exercise_id):
         }
     )
     return submission
+   
     
 def get_query(submission_id):
     submission = db.submission_table.query(KeyConditionExpression=Key('submission_id').eq(submission_id))
     return submission
+
+
+def get_student_submissions(student_id):
+    submissions = db.submission_table.scan(FilterExpression=Key('student_id').eq(student_id))
+    return submissions['Items']
 
 
 def get_all():
