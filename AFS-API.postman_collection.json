@@ -1,0 +1,374 @@
+{
+	"info": {
+		"_postman_id": "ebdd2eb3-91a0-4ae9-ba37-bfa97354f019",
+		"name": "AFS-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13806892"
+	},
+	"item": [
+		{
+			"name": "Create submission",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"  pm.expect(pm.response.status).to.be.eq(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Submission added to database\", function () {\r",
+							"  pm.sendRequest(\r",
+							"    \"https://api.romainclemencon.com/submission/i/?exercise_id=1&submission_id=\" +\r",
+							"      pm.response.id,\r",
+							"    function (err, response) {\r",
+							"      pm.expect(response.status).to.be.eq(\"OK\");\r",
+							"    }\r",
+							"  );\r",
+							"});\r",
+							"\r",
+							"let itterations = 10;\r",
+							"\r",
+							"pm.test(\"Submission is compiled\", function () {\r",
+							"  while (itterations < 10) {\r",
+							"    pm.sendRequest(\r",
+							"      \"https://api.romainclemencon.com/submission/i/?exercise_id=1&submission_id=\" +\r",
+							"        pm.response.id,\r",
+							"      function (err, response) {\r",
+							"        pm.expect(response.submission.Item.compiled_status).to.be.eq(\"compiled\");\r",
+							"      }\r",
+							"    );\r",
+							"    setTimeout(() => {\r",
+							"          itterations++;\r",
+							"        }, 2000);\r",
+							"  }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "POST,GET,OPTIONS",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Access",
+						"value": "",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exercise_id\": \"1\",\r\n    \"student_id\": \"guest\",\r\n    \"feedback\": {\"type\": \"basic\"},\r\n    \"source_code\": \"IyBzb21lIGNvbW1lbnQKcHJpbnQoInRlc3QiKQ==\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.romainclemencon.com/submission",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"submission"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student submissions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Submissions are only from student\", function () {\r",
+							"    for (sub in pm.response.submissions) {\r",
+							"        pm.expect(sub.student_id).to.eq(\"romain.clemencon@mycit.ie\");\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.romainclemencon.com/submissions/romain.clemencon@mycit.ie",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"submissions",
+						"romain.clemencon@mycit.ie"
+					],
+					"query": [
+						{
+							"key": "student_id",
+							"value": "romain.clemencon@mycit.ie",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get exercise",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct exercise returned\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.exercise.Item.exercise_id).to.eq(\"1\");\r",
+							"    pm.expect(jsonData.exercise.Item.description.title).to.eq(\"Draw a Box\");\r",
+							"    pm.expect(jsonData.exercise.Item.description.title).to.eq(\"Draw a Box\");\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.romainclemencon.com/exercise/i/?exercise_id=1&date_time=2023-03-19T12:30:45.000Z",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"exercise",
+						"i",
+						""
+					],
+					"query": [
+						{
+							"key": "exercise_id",
+							"value": "1"
+						},
+						{
+							"key": "date_time",
+							"value": "2023-03-19T12:30:45.000Z"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get submission Run",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct submission returned\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.submission.Item.exercise_id).to.eq(\"1\");\r",
+							"    pm.expect(jsonData.submission.Item.student_id).to.eq(\"romain.clemencon@mycit.ie\");\r",
+							"    pm.expect(jsonData.submission.Item.submission_id).to.eq(\"2tVk2txe6tzrRZwUCM2rQF\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Submission is run type\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.submission.Item.feedback.type).to.eq(\"basic\");\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.romainclemencon.com/submission/i/?submission_id=2tVk2txe6tzrRZwUCM2rQF&exercise_id=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"submission",
+						"i",
+						""
+					],
+					"query": [
+						{
+							"key": "submission_id",
+							"value": "2tVk2txe6tzrRZwUCM2rQF"
+						},
+						{
+							"key": "exercise_id",
+							"value": "1"
+						},
+						{
+							"key": "student_id",
+							"value": "guest",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get submission Feedback",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct submission returned\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.submission.Item.exercise_id).to.eq(\"1\");\r",
+							"    pm.expect(jsonData.submission.Item.student_id).to.eq(\"guest\");\r",
+							"    pm.expect(jsonData.submission.Item.submission_id).to.eq(\"apfApmEH7nVLTAedAWowvH\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.romainclemencon.com/submission/i/?submission_id=apfApmEH7nVLTAedAWowvH&exercise_id=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"submission",
+						"i",
+						""
+					],
+					"query": [
+						{
+							"key": "submission_id",
+							"value": "apfApmEH7nVLTAedAWowvH"
+						},
+						{
+							"key": "exercise_id",
+							"value": "1"
+						},
+						{
+							"key": "student_id",
+							"value": "guest",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all submissions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.eq(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a list\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.submissions).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"List isn't empty\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.submissions.length).to.be.gt(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.romainclemencon.com/submission/all",
+					"protocol": "https",
+					"host": [
+						"api",
+						"romainclemencon",
+						"com"
+					],
+					"path": [
+						"submission",
+						"all"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
