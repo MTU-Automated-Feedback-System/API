@@ -25,7 +25,7 @@ def post_submission():
         payload["exercise"] = db_exercise.get_query(payload["exercise_id"])[0]
         for test_case in payload["exercise"]["test_cases"]:
             test_case["threshold"] = int(test_case["threshold"])
-
+            
         response = send_to_queue(payload)
         # response = requests.post("http://127.0.0.1:8081/submission", json=payload)
         
@@ -71,12 +71,22 @@ def get_submission():
 def get_submission_query(id):
     return {id: db_submission.get_query(id)}
 
-
+# Get all submissions for a student
 @bp.route('/submissions/<student_id>', methods=["GET"])
 def get_submissions_query(student_id):
     return {"submissions": db_submission.get_student_submissions(student_id)}
 
+# Get all submissions for a student for a specific exercise
+@bp.route('/submissions/<student_id>/<exercise_id>', methods=["GET"])
+def get_submissions_exercise_query(student_id, exercise_id):
+    return {"submissions": db_submission.get_student_submissions_exercise(student_id, exercise_id)}
 
+# Get all submissions for a specific exercise
+@bp.route('/submission/all/<exercise_id>', methods=["GET"])
+def get_all_exercise_submissions(exercise_id):
+    return {"submissions": db_submission.get_all_exercise_submissions(exercise_id)}
+
+# Get all submissions 
 @bp.route('/submission/all', methods=["GET"])
 def get_all_submissions():
     return {"submissions": db_submission.get_all()}

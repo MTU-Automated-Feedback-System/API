@@ -9,11 +9,12 @@ bp = Blueprint('exercise', __name__, template_folder='/src/templates')
 @bp.route('/exercise', methods=["POST"])
 def post_exercise():
     payload = json.loads(request.data)
-    exercise_id = shortuuid.uuid()
-    payload["exercise_id"] = exercise_id
+    # exercise_id = shortuuid.uuid()
+    # payload["exercise_id"] = exercise_id
     payload["date_time"] = datetime.now().isoformat()
+    print(payload)
     db_exercise.add(payload)
-    return {"id": exercise_id}
+    return {"status": "OK"}
 
 
 @bp.route('/exercise/i/', methods=["GET"])

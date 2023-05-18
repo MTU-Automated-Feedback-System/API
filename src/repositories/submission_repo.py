@@ -36,6 +36,13 @@ def get_student_submissions(student_id):
     submissions = db.submission_table.scan(FilterExpression=Key('student_id').eq(student_id))
     return submissions['Items']
 
+def get_student_submissions_exercise(student_id, exercise_id):
+    submissions = db.submission_table.scan(FilterExpression=Key('student_id').eq(student_id) & Key('exercise_id').eq(exercise_id))
+    return submissions['Items']
+
+def get_all_exercise_submissions(exercise_id):
+    submissions = db.submission_table.scan(FilterExpression=Key('exercise_id').eq(exercise_id))
+    return submissions['Items']
 
 def get_all():
     return db.submission_table.scan()['Items']
