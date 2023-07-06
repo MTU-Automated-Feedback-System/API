@@ -26,10 +26,11 @@ def post_submission():
         for test_case in payload["exercise"]["test_cases"]:
             test_case["threshold"] = int(test_case["threshold"])
             
-        response = send_to_queue(payload)
-        # response = requests.post("http://127.0.0.1:8081/submission", json=payload)
-        
-        return {"id": submission_id, "response": response}
+        # response = send_to_queue(payload) # Live 
+        # return {"id": submission_id, "response": response.json()} # Live
+
+        response = requests.post("http://127.0.0.1:8081/submission", json=payload) # Local
+        return {"id": submission_id, "response": "OK"}
     except Exception as e:
         return Response(f"{{'error':{e}}}", status=500, mimetype='application/json')
     
